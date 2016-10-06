@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Micropython by grazies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Micropython</h1>
+      <h2 class="project-tagline">MicroPython - a lean and efficient Python implementation for microcontrollers and constrained systems</h2>
+      <a href="https://github.com/grazies/micropython" class="btn">View on GitHub</a>
+      <a href="https://github.com/grazies/micropython/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/grazies/micropython/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><a href="https://travis-ci.org/micropython/micropython"><img src="https://travis-ci.org/micropython/micropython.png?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/r/micropython/micropython?branch=master"><img src="https://coveralls.io/repos/micropython/micropython/badge.png?branch=master" alt="Coverage Status"></a></p>
+
+<h1>
+<a id="the-micropython-project" class="anchor" href="#the-micropython-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The MicroPython project</h1>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/micropython/micropython/master/logo/upython-with-micro.jpg" alt="MicroPython Logo">
+</p>
+
+<p>This is the MicroPython project, which aims to put an implementation
+of Python 3.x on microcontrollers and small embedded systems.
+You can find the official website at <a href="http://www.micropython.org">micropython.org</a>.</p>
+
+<p>WARNING: this project is in beta stage and is subject to changes of the
+code-base, including project-wide name changes and API changes.</p>
+
+<p>MicroPython implements the entire Python 3.4 syntax (including exceptions,
+"with", "yield from", etc., and additionally "async" keyword from Python 3.5).
+The following core datatypes are provided: str (including basic Unicode
+support), bytes, bytearray, tuple, list, dict, set, frozenset, array.array,
+collections.namedtuple, classes and instances. Builtin modules include sys,
+time, and struct.  Note that only subset of Python 3.4 functionality
+implemented for the data types and modules.</p>
+
+<p>See the repository <a href="http://www.github.com/micropython/pyboard">www.github.com/micropython/pyboard</a> for the Micro
+Python board, the officially supported reference electronic circuit board.</p>
+
+<p>Major components in this repository:</p>
+
+<ul>
+<li>py/ -- the core Python implementation, including compiler, runtime, and
+core library.</li>
+<li>unix/ -- a version of MicroPython that runs on Unix.</li>
+<li>stmhal/ -- a version of MicroPython that runs on the MicroPython board
+with an STM32F405RG (using ST's Cube HAL drivers).</li>
+<li>minimal/ -- a minimal MicroPython port. Start with this if you want
+to port MicroPython to another microcontroller.</li>
+<li>tests/ -- test framework and test scripts.</li>
+<li>docs/ -- user documentation in Sphinx reStructuredText format.</li>
+</ul>
+
+<p>Additional components:</p>
+
+<ul>
+<li>bare-arm/ -- a bare minimum version of MicroPython for ARM MCUs. Used
+mostly to control code size.</li>
+<li>teensy/ -- a version of MicroPython that runs on the Teensy 3.1
+(preliminary but functional).</li>
+<li>pic16bit/ -- a version of MicroPython for 16-bit PIC microcontrollers.</li>
+<li>cc3200/ -- a version of MicroPython that runs on the CC3200 from TI.</li>
+<li>esp8266/ -- an experimental port for ESP8266 WiFi modules.</li>
+<li>tools/ -- various tools, including the pyboard.py module.</li>
+<li>examples/ -- a few example Python scripts.</li>
+</ul>
+
+<p>The subdirectories above may include READMEs with additional info.</p>
+
+<p>"make" is used to build the components, or "gmake" on BSD-based systems.
+You will also need bash and Python (at least 2.7 or 3.3).</p>
+
+<h2>
+<a id="the-unix-version" class="anchor" href="#the-unix-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Unix version</h2>
+
+<p>The "unix" port requires a standard Unix environment with gcc and GNU make.
+x86 and x64 architectures are supported (i.e. x86 32- and 64-bit), as well
+as ARM and MIPS. Making full-featured port to another architecture requires
+writing some assembly code for the exception handling and garbage collection.
+Alternatively, fallback implementation based on setjmp/longjmp can be used.</p>
+
+<p>To build (see section below for required dependencies):</p>
+
+<pre><code>$ cd unix
+$ make axtls
+$ make
+</code></pre>
+
+<p>Then to give it a try:</p>
+
+<pre><code>$ ./micropython
+&gt;&gt;&gt; list(5 * x + y for x in range(10) for y in [4, 2, 1])
+</code></pre>
+
+<p>Use <code>CTRL-D</code> (i.e. EOF) to exit the shell.
+Learn about command-line options (in particular, how to increase heap size
+which may be needed for larger applications):</p>
+
+<pre><code>$ ./micropython --help
+</code></pre>
+
+<p>Run complete testsuite:</p>
+
+<pre><code>$ make test
+</code></pre>
+
+<p>Unix version comes with a builtin package manager called upip, e.g.:</p>
+
+<pre><code>$ ./micropython -m upip install micropython-pystone
+$ ./micropython -m pystone
+</code></pre>
+
+<p>Browse available modules on
+<a href="https://pypi.python.org/pypi?%3Aaction=search&amp;term=micropython">PyPI</a>.
+Standard library modules come from
+<a href="https://github.com/micropython/micropython-lib">micropython-lib</a> project.</p>
+
+<h2>
+<a id="external-dependencies" class="anchor" href="#external-dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>External dependencies</h2>
+
+<p>Building Unix version requires some dependencies installed. For
+Debian/Ubuntu/Mint derivative Linux distros, install <code>build-essential</code>
+(includes toolchain and make), <code>libffi-dev</code>, and <code>pkg-config</code> packages.</p>
+
+<p>Other dependencies can be built together with MicroPython. Oftentimes,
+you need to do this to enable extra features or capabilities. To build
+these additional dependencies, first fetch git submodules for them:</p>
+
+<pre><code>$ git submodule update --init
+</code></pre>
+
+<p>Use this same command to get the latest versions of dependencies, as
+they are updated from time to time. After that, in <code>unix/</code> dir, execute:</p>
+
+<pre><code>$ make deplibs
+</code></pre>
+
+<p>This will build all available dependencies (regardless whether they
+are used or not). If you intend to build MicroPython with additional
+options (like cross-compiling), the same set of options should be passed
+to <code>make deplibs</code>. To actually enabled use of dependencies, edit
+<code>unix/mpconfigport.mk</code> file, which has inline descriptions of the options.
+For example, to build SSL module (required for <code>upip</code> tool described above),
+set <code>MICROPY_PY_USSL</code> to 1.</p>
+
+<p>In <code>unix/mpconfigport.mk</code>, you can also disable some dependencies enabled
+by default, like FFI support, which requires libffi development files to
+be installed.</p>
+
+<h2>
+<a id="the-stm-version" class="anchor" href="#the-stm-version" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The STM version</h2>
+
+<p>The "stmhal" port requires an ARM compiler, arm-none-eabi-gcc, and associated
+bin-utils.  For those using Arch Linux, you need arm-none-eabi-binutils and
+arm-none-eabi-gcc packages.  Otherwise, try here:
+<a href="https://launchpad.net/gcc-arm-embedded">https://launchpad.net/gcc-arm-embedded</a></p>
+
+<p>To build:</p>
+
+<pre><code>$ cd stmhal
+$ make
+</code></pre>
+
+<p>You then need to get your board into DFU mode.  On the pyboard, connect the
+3V3 pin to the P1/DFU pin with a wire (on PYBv1.0 they are next to each other
+on the bottom left of the board, second row from the bottom).</p>
+
+<p>Then to flash the code via USB DFU to your device:</p>
+
+<pre><code>$ make deploy
+</code></pre>
+
+<p>This will use the included <code>tools/pydfu.py</code> script.  If flashing the firmware
+does not work it may be because you don't have the correct permissions, and
+need to use <code>sudo make deploy</code>.
+See the README.md file in the stmhal/ directory for further details.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/grazies/micropython">Micropython</a> is maintained by <a href="https://github.com/grazies">grazies</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
